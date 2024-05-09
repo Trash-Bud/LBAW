@@ -1,0 +1,62 @@
+/*shared*/
+
+#contacts, #faq,#about-us {
+    padding: 5% 25%;
+}
+
+
+#contacts h1, #faq h1, #about-us h1{
+    text-align: center;
+
+}
+
+#about-us{
+    padding-bottom: 10%;
+}
+
+
+/*contacts*/
+
+#contacts td{
+    text-align: justify;
+}
+
+#contacts table{
+    margin-top: 5%;
+}
+
+/*faq*/
+
+#faq td{
+    vertical-align: top;
+
+}
+
+/*about us*/
+
+#about-us h1{
+    margin-bottom: 10%;
+}
+
+#about-us div{
+    text-align: justify;
+    text-indent: 10%;
+}
+@media only screen and (max-width: 890px){
+    #about-us{
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+
+    #contacts, #faq{
+        padding: 5% 0%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #faq,#contacts td{
+        padding: 3%;
+
+    }
+}

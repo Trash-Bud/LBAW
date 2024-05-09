@@ -1,0 +1,152 @@
+.list-order-section{
+    float: right;
+    padding: 2%;
+    width: 80%;
+    height: 95%;
+
+}
+
+.list-order-section > h2{
+}
+
+
+
+#all-orders-list{
+    width: 98%;
+    height: 88%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding-bottom: 10%;
+    gap: 10%;
+    align-items: center;
+}
+
+.orders-list-unpaid{
+    display: flex;
+    gap: 5%;
+    height: 30%;
+    padding: 2%;
+    overflow: auto;
+    flex-direction: column;
+    align-items: center;
+}
+
+.orders-list{
+    display: flex;
+    gap: 5%;
+    height: 50%;
+    padding: 2%;
+    overflow: auto;
+    flex-direction: column;
+    align-items: center;
+}
+
+.order-list-title{
+    font-size: 1.5em;
+}
+
+.order-card{
+    display: flex;
+    padding-right: 2%;
+    border: 1px solid lightgrey;
+    border-radius: 10px;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    gap: 2%;
+    margin-bottom: 2%;
+    justify-content: space-around;
+}
+.edit-order-button{
+    width: min-content;
+}
+
+.order-card:hover{
+    cursor: pointer;
+}
+
+.status-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 70%;
+    justify-self: end;
+    width: 200px;
+    border-radius: 10px;
+    color: white;
+    font-family: 'Roboto', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+    font-size: 0.7em;
+}
+
+.track-number-div{
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    align-content: center;
+    padding-left: 5%;
+    padding-right: 5%;
+    background-color: #e6e6e6;
+    height: 100%;
+    margin-left: 0;
+    border-radius: 10px 0 0 10px ;
+}
+
+.order-details-section{
+    display: grid;
+    justify-content: center;
+    padding: 5%;
+
+    padding-bottom: 10%;
+}
+
+.order-table{
+    width: 95% ;
+}
+
+.order-table tr > td:nth-of-type(2){
+    text-align: end;
+    word-break: break-word;
+    white-space: normal;
+    line-height: 1.4;
+}
+
+
+.products-table{
+    width: 100%;
+    border: 1px solid lightgrey;
+}
+.products-table th, .products-table td:nth-of-type(2){
+    text-align: center;
+}
+
+.products-table td {
+    padding: 10px;
+    text-align: center;
+}
+.products-table > tfoot{
+    background-color: #e6e6e6;
+}
+
+.products-table > tfoot td{
+    text-align: center;
+}
+
+.order-product-list{
+    width: 100%;
+}
+
+@media only screen and (max-width: 890px){
+    .order-card{
+        flex-direction: column;
+        padding-right: 0;
+        padding-bottom: 2%;
+    }
+
+.track-number-div{
+
+    width: 100%;
+    border-radius: 10px 10px 0 0px ;
+}
+}
+
+

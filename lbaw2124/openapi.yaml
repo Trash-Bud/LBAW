@@ -1,0 +1,1341 @@
+openapi: '3.0.2'
+info:
+  title: FeupTech
+  version: '1.0'
+  description: 'Web Resources Specification (A7) for FeupTech'
+servers:
+  - url: http://lbaw2224.lbaw.fe.up.pt
+    description: 'Production Server'
+externalDocs:
+ description: Find more info here.
+ url: 
+tags:
+ - name: 'M01: Authentication and Individual Profile'
+ - name: 'M02: Reviews and Wishlist'
+ - name: 'M03: Products'
+ - name: 'M04: Shopping Cart'
+ - name: 'M05: Order'
+ - name: 'M06: Administration'
+ - name: 'M07: Static Pages'
+paths:
+
+  ###---------------------------M01---------------------------###
+
+  /login:
+    get:
+      operationId: R101
+      summary: 'R101: Login Form'
+      description: 'Provide login form. Access: PUB'
+      tags:
+        - 'M01: Authentication and Individual Profile'
+      responses:
+        '200':
+          description: 'Ok. Show Log-in UI'
+    post:
+      operationId: R102
+      summary: 'R102: Login Action'
+      description: 'Process the login form submission. Access: PUB'
+      tags:
+        - 'M01: Authentication and Individual Profile'
+
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:       # <!--- form field name
+                  type: string
+                  format: email
+                password:    # <!--- form field name
+                  type: string
+                  format: password
+              required:
+                    - email
+                    - password
+
+      responses:
+        '302':
+          description: 'Redirect after processing the login credentials.'
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                Success:
+                  description: 'Successful authentication. Redirect to user profile.'
+                  value: '/personalinfo'
+                Error:
+                  description: 'Failed authentication. Redirect to login form.'
+                  value: '/login'
+  /logout:
+    post:
+      operationId: R103
+      summary: 'R103: Logout Action'
+      description: 'Logout the current user. Access: USR, ADM'
+      tags:
+        - 'M01: Authentication and Individual Profile'
+      responses:
+        '302':
+          description: 'Successful logout. Redirect to /login.'
+
+  /register:
+   get:
+     operationId: R104
+     summary: 'R104: Register Form'
+     description: 'Provide new user registration form. Access: PUB'
+     tags:
+       - 'M01: Authentication and Individual Profile'
+     responses:
+       '200':
+         description: 'Ok. Show Sign-Up UI'
+   post:
+     operationId: R105
+     summary: 'R105: Register Action'
+     description: 'Process the new user registration form submission. Access: PUB'
+     tags:
+       - 'M01: Authentication and Individual Profile'
+
+     requestBody:
+       required: true
+       content:
+         application/x-www-form-urlencoded:
+           schema:
+             type: object
+             properties:
+               name:
+                 type: string
+               email:
+                 type: string
+                 format: email
+               password: 
+                 type: string
+                 format: password
+               confirm password: 
+                 type: string
+                 format: password
+             required:
+               - email
+               - password
+               - confirm password
+               - name
+     responses:
+       '302':
+         description: 'Redirect after processing the new user information.'
+         content:
+           application/json:
+             schema:
+               type: string
+             examples:
+               Success:
+                 description: 'Successful authentication. Redirect to user profile.'
+                 value: '/personalinfo'
+               Failure:
+                 description: 'Failed authentication. Redirect to login form.'
+                 value: '/login'
+  /password_recovery: 
+        get: 
+          operationId: R106
+          summary: 'R106: Password Recovery form'
+          description: 'Show password recovery form. Access: PUB'
+          tags:
+            - 'M01: Authentication and Individual Profile'
+          responses:
+            '200':
+                  description: 'Ok. Show password recovery form'
+        post: 
+          operationId: R107
+          summary: 'R107: Password Recovery request'
+          description: 'File a password recovery request. Access: PUB'
+          tags: 
+             - 'M01: Authentication and Individual Profile'
+          requestBody:
+            required: true
+            content:
+              application/x-www-form-urlencoded:
+                schema:
+                  type: object
+                  properties:
+                    email:       # <!--- form field name
+                      type: string
+                      format: email
+                  required:
+                        - email
+          responses:
+              '200':
+                description: 'Redirect after processing the new user information.'
+                content:
+                  application/json:
+                    examples:
+                      Success:
+                        description: 'Email exists.'
+                      Failure:
+                        description: 'Email does not exist.'
+
+  /personalinfo:
+     get:
+      operationId: R108
+      summary: 'R108: View User Profile'
+      description: 'Show the individual user profile. Access: USR'
+      tags:
+        - 'M01: Authentication and Individual Profile'
+
+      responses:
+        '200':
+          description: 'Ok. Show User Profile UI'
+     post:
+      operationId: R109
+      summary: 'R109: Appeal Unblock'
+      description: 'Appeal a "Block" in order to be able to make reviews again. Access: USR'
+      tags:
+        - 'M01: Authentication and Individual Profile'
+      responses:
+          '200':
+            description: 'Ok. Request in queue.'
+
+     delete:
+      operationId: R109
+      summary: 'R109: Delete User Profile'
+      description: 'Delete the individual user profile. Access: USR'
+      tags:
+        - 'M01: Authentication and Individual Profile'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                current password:
+                  type: string
+                  format: password
+              required:
+                    - current password
+      responses:
+          '302':
+            description: 'Evaluate if account should be deleted.'
+            content:
+                  application/json:
+                    examples:
+                      Success:
+                        description: 'Password accepted. Redirect to /products.'
+                      Failure:
+                        description: 'Password rejected. Redirect to /personainfo.'
+          '404': 
+            description: 'Profile not found.'
+     patch:
+      operationId: R110
+      summary: 'R110: Edit User Profile Request'
+      description: 'File a profile edit request. Access: USR'
+      tags: 
+        - 'M01: Authentication and Individual Profile'
+      requestBody:
+            required: true
+            content:
+              application/x-www-form-urlencoded:
+                schema:
+                  type: object
+                  properties:
+                    new picture:
+                      type: string
+                      format: binary
+                    new name:
+                      type: string
+                    new email:
+                      type: string
+                      format: email
+                    new password:
+                      type: string
+                      format: password
+                    confirm new password:
+                      type: string
+                      format: password
+                    current password:       # <!--- form field name
+                      type: string
+                      format: password
+                  required:
+                        - current password
+      responses:
+              '200':
+                description: 'Redirect after processing the new information.'
+                content:
+                  application/json:
+                    examples:
+                      Success:
+                        description: 'Update.'
+                        
+                      Failure:
+                        description: 'Incorrect current password. Do not update'
+                        
+  /personalinfo/redeem:
+    get:
+      operationId: R111
+      summary: 'R111: Redeem Gif Card Form'
+      description: 'Show the "redeem giftcard" form. Access: USR'
+      tags:
+        - 'M01: Authentication and Individual Profile'
+      responses:
+        '200':
+          description: 'Ok. Showing redeem form'
+    patch:
+      operationId: R112
+      summary: 'R112: Redeem Git Card Request'
+      description: 'Send the server a giftcard code to validate. Access: USR'
+      tags: 
+        - 'M01: Authentication and Individual Profile'
+      requestBody:
+            required: true
+            content:
+              application/x-www-form-urlencoded:
+                schema:
+                  type: object
+                  properties:
+                    code:
+                      type: string
+                  required:
+                        - code
+      responses:
+              '200':
+                description: 'Sent request to validate code.'
+                content:
+                    application/json:
+                      examples:
+                        Success:
+                          description: 'Code accepted. Added account credits.'
+                        Failure:
+                          description: 'Code rejected. No account credits were added.'
+        
+  /addresses:
+    get:
+      operationId: R113
+      summary: 'R113: View User Addresses'
+      description: 'List all the users adresses. Access: USR'
+      tags:
+        - 'M01: Authentication and Individual Profile'
+      responses:
+        '200':
+          description: 'Ok. Show User Adresses UI'
+
+  /delete_address/{id}:
+    delete:
+      operationId: R114
+      summary: 'R114: Delete Address'
+      description: 'Remove an address from the users profile. Access: USR'
+      tags: 
+        - 'M01: Authentication and Individual Profile'
+      responses:
+              '200':
+                description: 'Remove the address.'
+
+  /add_address:
+    get:
+      operationId: R115
+      summary: 'R115: Address Input Form'
+      description: 'Show the form to add an address. Access: USR'
+      tags:
+        - 'M01: Authentication and Individual Profile'
+      responses:
+        '200':
+          description: 'Ok. Show Add Adresses UI'
+    post:
+      operationId: R116
+      summary: 'R116: Address Input Request'
+      description: 'Add a new address to the users profile. Access: USR'
+      tags: 
+        - 'M01: Authentication and Individual Profile'
+      requestBody:
+            required: true
+            content:
+              application/x-www-form-urlencoded:
+                schema:
+                  type: object
+                  properties:
+                    street:
+                      type: string
+                    country:
+                      type: string
+                    postal code:
+                      type: string
+                  required:
+                    - street
+                    - country
+                    - postal code
+      responses:
+              '200':
+                description: 'Add the new adress.'
+
+  /edit_address/{id}:
+    get:
+      operationId: R117
+      summary: 'R117: Address Edit Form'
+      description: 'Show the form to edit a specific address. Access: USR'
+      tags:
+        - 'M01: Authentication and Individual Profile'
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true  
+      responses:
+        '200':
+          description: 'Ok. Show Add Adresses UI'
+    patch:
+      operationId: R118
+      summary: 'R118: Address Edit Request'
+      description: 'Edit an address from the users profile. Access: USR'
+      tags: 
+        - 'M01: Authentication and Individual Profile'
+      requestBody:
+            required: true
+            content:
+              application/x-www-form-urlencoded:
+                schema:
+                  type: object
+                  properties:
+                    street:
+                      type: string
+                    country:
+                      type: string
+                    postal code:
+                      type: string
+      responses:
+              '200':
+                description: 'Update the adress.'
+
+  /payment_methods:
+    get:
+      operationId: R119
+      summary: 'R119: View Payment Methods'
+      description: 'List all the users payment methods. Access: USR'
+      tags:
+        - 'M01: Authentication and Individual Profile'
+      responses:
+        '200':
+          description: 'Ok. Show User payment methods UI'
+    delete:
+      operationId: R120
+      summary: 'R120: Delete Payment Method'
+      description: 'Remove a payment method from the users profile. Access: USR'
+      tags: 
+        - 'M01: Authentication and Individual Profile'
+      responses:
+              '200':
+                description: 'Remove the payment method.'
+  
+  /add_payment_method:
+     get:
+      operationId: R121
+      summary: 'R121: Payment Method Input Form'
+      description: 'Show the form to add a payment method. Access: USR'
+      tags:
+        - 'M01: Authentication and Individual Profile'
+      responses:
+        '200':
+          description: 'Ok. Show User payment methods UI'
+     post:
+      operationId: R122
+      summary: 'R122: Payment Method Input Request'
+      description: 'Add a new payment method to the users profile. Access: USR'
+      tags: 
+        - 'M01: Authentication and Individual Profile'
+      requestBody:
+            required: true
+            content:
+              application/x-www-form-urlencoded:
+                schema:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                    number:
+                      type: string
+                    expiration date:
+                      type: string
+                    cvc:
+                      type: string
+                  required:
+                    - cvc
+                    - type
+                    - number
+                    - expiration date
+      responses:
+              '200':
+                description: 'Add the new payment method.'
+                
+  /orders:
+     get:
+      operationId: R123
+      summary: 'R123: View Orders'
+      description: 'List all orders made by the user and their status. Access: USR'
+      tags:
+        - 'M01: Authentication and Individual Profile'
+      responses:
+        '200':
+          description: 'Ok. Show User orders list'
+        '403': 
+          description: 'Not enough permissions.'
+
+  /recomendations:
+     get:
+      operationId: R124
+      summary: 'R124: View Recommendations'
+      description: 'List product recommendations based on the users purchases. Access: USR'
+      tags:
+        - 'M01: Authentication and Individual Profile'
+      responses:
+        '200':
+          description: 'Ok. Show Users recommendations'
+        '403': 
+          description: 'Not enough permissions.'
+ 
+
+
+  /reviews:
+    get:
+      operationId: R125
+      summary: 'R125: View Reviews'
+      description: 'List all reviews made by the user. Access: USR'
+      tags:
+        - 'M01: Authentication and Individual Profile'
+      responses:
+        '200':
+          description: 'Ok. Show User reviews list'
+  
+
+  /notifications:
+    get:
+      operationId: R126
+      summary: 'R126: View Notifications'
+      description: 'List all notifications received by the user. Access: USR'
+      tags:
+        - 'M01: Authentication and Individual Profile'
+
+      responses:
+        '200':
+          description: 'Ok. Show User notifications list'
+        
+  ###---------------------------M02---------------------------###
+
+  /wishlist:
+    get:
+      operationId: R201
+      summary: 'R201: View Wishlist'
+      description: 'View the individual user profile wishlist. Access: USR'
+      tags:
+        - 'M02: Reviews and Wishlist'
+      responses:
+       '200':
+         description: 'Ok. Show wishlist.'
+    delete:
+      operationId: R202
+      summary: 'R202: Delete Product from Wishlist'
+      description: 'Remove product from the individual user profile wishlist. Access: USR'
+      tags:
+        - 'M02: Reviews and Wishlist'
+      requestBody:
+            required: true
+            content:
+              application/x-www-form-urlencoded:
+                schema:
+                  type: object
+                  properties:
+                    product id:
+                      type: integer
+                    user id:
+                      type: integer
+                  required:
+                        - product id
+                        - user id
+      responses:
+       '200':
+         description: 'Ok. Remove product.'
+  
+  /add_wishlist/{id}:
+    post:
+    
+      operationId: R203
+      summary: 'R203: Add Product to Wishlist'
+      description: 'Add product to the individual user profile wishlist. Access: USR'
+      tags:
+        - 'M02: Reviews and Wishlist'
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+       '200':
+         description: 'Ok. Add product.'
+
+  /review/{id}:
+      get:
+        operationId: R204
+        summary: 'R204: View Review'
+        description: 'View the review. Access: PUB'
+        tags:
+          - 'M02: Reviews and Wishlist'
+        parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+        responses:
+          '200':
+            description: 'Ok. Show reviews.'
+      delete:
+        operationId: R205
+        summary: 'R205: Delete Review'
+        description: 'Remove a previously made review of a purchased product. Access: BUY, ADM'
+        tags:
+          - 'M02: Reviews and Wishlist'
+        parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer 
+            required: true
+        responses:
+          '302':
+            description: 'Delete after verifying permissions and Redirect to the product.'
+          '403':
+            description: 'Forbidden action'
+      post:
+        operationId: R206
+        summary: 'R206: Report Review'
+        description: 'Report a review made by another user. Access: USR'
+        tags:
+          - 'M02: Reviews and Wishlist'
+        parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+        responses:
+          '200':
+            description: 'Ok. '
+
+  /add_review/{id}:
+      get:
+        operationId: R207
+        summary: 'R207: Review Input Form'
+        description: 'Show the form for adding reviews. Access: BUY'
+        tags:
+          - 'M02: Reviews and Wishlist'
+        parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer 
+            required: true
+        responses:
+          '200':
+            description: 'Ok. Show review form.'
+      post:
+        operationId: R208
+        summary: 'R208: Review Input Request'
+        description: 'Add a review to a purchased product. Access: BUY'
+        tags:
+          - 'M02: Reviews and Wishlist'
+        parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer 
+            required: true
+        requestBody:
+            required: true
+            content:
+              application/x-www-form-urlencoded:
+                schema:
+                  type: object
+                  properties:
+                    rating:
+                      type: integer
+                    description:
+                      type: string
+                  required:
+                      - rating
+        responses:
+          '200':
+            description: 'Ok. Post new review.'
+          '403':
+            description: 'Frobidden action.'
+
+  /edit_review/{id}:
+      get:
+        operationId: R209
+        summary: 'R209: Review Edit Form'
+        description: 'Show the form for editing reviews. Access: BUY'
+        tags:
+          - 'M02: Reviews and Wishlist'
+        parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer
+            required: true
+        responses:
+          '200':
+            description: 'Ok. Show review form.'
+      patch:
+        operationId: R210
+        summary: 'R210: Review Edit Request'
+        description: 'Edit a previously made review. Access: BUY'
+        tags:
+          - 'M02: Reviews and Wishlist'
+        parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer
+            required: true
+        requestBody:
+            required: true
+            content:
+              application/x-www-form-urlencoded:
+                schema:
+                  type: object
+                  properties:
+                    rating:
+                      type: integer
+                    description:
+                      type: string
+        responses:
+          '200':
+            description: 'Ok. Edit review.'
+          '403':
+            description: 'Frobidden action.'
+
+  ###---------------------------M03---------------------------###
+
+  /products:
+      get:
+        operationId: R301
+        summary: 'R301: View Products'
+        description: 'List all the products on the website. Access: PUB'
+        tags:
+          - 'M03: Products'
+        responses:
+          '200':
+            description: 'Ok. Show products.'
+            
+  /categories:
+      get: 
+        operationId: R302
+        summary: 'R302: View Categories.'
+        description: 'List all categories of products available. Access: PUB'
+        tags: 
+          - 'M03: Products'
+        responses: 
+          '302': 
+            description: 'Redirect to the list all products page with the category filter'
+      
+
+  /products/{category}: 
+      get: 
+        operationId: R303
+        summary: 'R303: View Products of a Category.'
+        description: 'List all products that are included in a category'
+        tags: 
+          - 'M03: Products'
+        parameters:
+        - in: path
+          name: category
+          schema:
+            type: string 
+          required: true
+        responses:
+          '200': 
+            description: 'Ok. Successful listing of products'
+          '404': 
+            description: 'The category is not present in the store'
+
+  /products/search:
+      get:
+        operationId: R304
+        summary: 'R304: Search Product'
+        description: 'Search a specific product of the website. Access: PUB'
+        tags:
+          - 'M03: Products'
+        parameters:
+          - in: path
+            name: searchString
+            schema:
+              type: string 
+            required: true
+        responses:
+          '201':
+            description: 'Ok. Show search results.'
+
+  /products/{id}:
+      get:
+        operationId: R305
+        summary: 'R305: View Product Details.'
+        description: 'Show detailed information of a specific product. Access: PUB'
+        tags:
+          - 'M03: Products'
+        parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer 
+            required: true
+        responses:
+          '200':
+            description: 'Ok. Show product.'
+          '404': 
+            description: 'No product found.'
+      delete: 
+        operationId: R306
+        summary: 'R306: Reduce Item Stock'
+        description: 'Decrease stock of product. Access: ADM'
+        tags:
+            - 'M03: Products'
+        parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer 
+            required: true
+        responses: 
+          '302':
+              description: 'Successful remove. Redirect to /products.'
+          '403': 
+            description: 'The user does not have permissions to perfom the action'  
+
+  /add_product:
+    get:
+        operationId: R307
+        summary: 'R307: Item Input Form'
+        description: 'Get form that adds an item to the website. Access: ADM'
+        tags:
+          - 'M03: Products'
+        responses:
+          '200':
+            description: 'Ok. Provided form'
+          '403': 
+            description: 'The user does not have permissions to perfom the action'
+    post: 
+      operationId: R308
+      summary: 'R308: Item Input Request'
+      description: 'Add a given item to the database. Access: ADM'
+      tags:
+          - 'M03: Products'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                category:
+                  type: string
+                description: 
+                  type: string
+                picture:
+                  type: string
+                  format: binary
+                stock: 
+                  type: integer
+                price: 
+                  type: number
+                  format: float
+                original_price: 
+                  type: number
+                  format: float
+                on_sale:
+                  type: number
+                  format: float
+                code: 
+                  type: integer
+              required:
+                - category 
+                - stock 
+                - original_price
+                - code
+                - on_sale 
+
+      responses: 
+        '302':
+          description: 'Successful insert. Redirect to /products/add.'
+        '403': 
+          description: 'The user does not have permissions to perfom the action'
+
+  /edit_product/{id}:
+    get:
+        operationId: R309
+        summary: 'R309: Item Edit Form'
+        description: 'Get form that allows the admin to edit an item. Access: ADM'
+        tags:
+         - 'M03: Products'
+        parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+        responses:
+          '200':
+            description: 'Ok. Edited the specified product'
+    patch: 
+      operationId: R310
+      summary: 'R310: Item Edit Request'
+      description: 'Edit a given item of the items database. Access: ADM'
+      tags:
+          - 'M03: Products'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                category:
+                  type: string
+                description: 
+                  type: string
+                picture:
+                  type: string
+                  format: binary
+                stock: 
+                  type: integer
+                price: 
+                  type: number
+                  format: float
+                original_price: 
+                  type: number
+                  format: float
+                on_sale:
+                  type: number
+                  format: float
+              required:
+                - id
+                - admin id
+      responses: 
+        '302':
+          description: 'Successful authentication. Redirect to /products.'
+        '403': 
+          description: 'The user does not have permissions to perfom the action'
+    
+  ###---------------------------M04---------------------------###
+
+  /shoppingcart:
+      get:
+        operationId: R401
+        summary: 'R401: View Shopping Cart'
+        description: 'List all the products on the users shopping cart. Access: USR'
+        tags:
+          - 'M04: Shopping Cart'
+        responses:
+          '200':
+            description: 'Ok. Show shopping cart.'
+  /shoppingcart/{id}:
+      post:
+        operationId: R402
+        summary: 'R402: Add Product to Shopping Cart'
+        description: 'Add an ammount of a product to the shopping cart. Access: PUB, USR'
+        tags:
+          - 'M04: Shopping Cart'
+        requestBody:
+          required: true
+          content:
+            application/x-www-form-urlencoded:
+              schema:
+                type: object
+                properties:
+                  ammount:
+                    type: integer
+                    default: 1
+        responses:
+          '200':
+            description: 'Ok. Add product'
+      delete:
+        operationId: R403
+        summary: 'R403: Delete Product from Shopping Cart'
+        description: 'Remove product from the users shopping cart. Access: PUB, USR'
+        tags:
+          - 'M04: Shopping Cart'
+        requestBody:
+          required: true
+          content:
+            application/x-www-form-urlencoded:
+              schema:
+                type: object
+                properties:
+                  ammount:
+                    type: integer
+                    default: 1
+        responses:
+          '200':
+            description: 'Ok. Remove product from shopping cart.'
+
+  /checkout:
+      get:
+        operationId: R404
+        summary: 'R404: Checkout Form'
+        description: 'Get form to checkout. Access: USR'
+        tags:
+          - 'M04: Shopping Cart'
+        responses:
+          '200':
+            description: 'Ok. Show checkout page'
+      post:
+        operationId: R405
+        summary: 'R405: Checkout Request'
+        description: 'Fill in the address and payment information to checkout. Access: USR'
+        tags:
+          - 'M04: Shopping Cart'
+        responses:
+          '302':
+            description: 'Redirect after the user decides if they want to proceed.'
+            content:
+              application/json:
+                schema:
+                  type: string
+                examples:
+                  Proceed:
+                    description: 'User added a payment method. Redirect to order.'
+                    value: '/order/{id}'
+                  Cancel:
+                    description: 'User did not add a payment method. Redirect to shoppingCart.'
+                    value: '/shoppingCart'
+
+  ###---------------------------M05---------------------------###
+
+  /order/{id}:
+      get:
+        operationId: R501
+        summary: 'R501: View Order'
+        description: 'View information for a specific order (address, payment details...). Access: BUY, ADM'
+        tags:
+          - 'M05: Order'
+        parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer
+            required: true
+        responses:
+          '200':
+            description: 'Ok. Show order.'
+      delete:
+        operationId: R502
+        summary: 'R502: Cancel Order'
+        description: 'Cancel a specific order. Access: BUY'
+        tags:
+          - 'M05: Order'
+        parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer
+            required: true
+        responses:
+          '302':
+            description: 'Cancel order. Redirect to /user/{id} '
+
+  /edit_order/{id}:
+      get:
+        operationId: R503
+        summary: 'R503: Order Edit Form'
+        description: 'Show form for editing an order. Access: BUY, ADM'
+        tags:
+          - 'M05: Order'
+        parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer
+            required: true
+        responses:
+          '200':
+            description: 'Ok. Show the edit order form'
+      post:
+        operationId: R504
+        summary: 'R504: Order Edit Request'
+        description: 'Edit information for a specific order (address, payment details...). Access: BUY, ADM'
+        tags:
+          - 'M05: Order'
+        parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer
+            required: true
+        requestBody:
+          required: true
+          content:
+            application/x-www-form-urlencoded:
+              schema:
+                type: object
+                properties:
+                  charge id:
+                    type: integer
+                  address id:
+                    type: integer
+                  status:
+                    type: string
+                required:
+                  - user id
+        responses:
+          '302':
+            description: 'Edit order. Redirect to /order/{id}'
+
+  /order/{trackId}:
+      get:
+        operationId: R505
+        summary: 'R505: Track Order'
+        description: 'Send user to the tracking order page. Access: BUY'
+        tags:
+          - 'M05: Order' 
+        parameters:
+          - in: path
+            name: trackId
+            schema:
+              type: integer
+            required: true
+        responses:
+          '200':
+            description: 'Ok. Show track page.'
+          '402':
+            description: 'Forbidden access.'
+
+  ###---------------------------M06---------------------------###
+  
+  /admin: 
+    get: 
+      operationId: R601
+      summary: 'R601: View Admin dashboard'
+      description: 'View the admin dashboard page. Access: ADM'
+      tags:
+          - 'M06: Administration' 
+      responses:
+        '200':
+            description: 'Ok. Showing Admin dashboard' 
+        '403':
+            description: 'Forbidden, not enough permissions'
+  
+  /users:
+      get:
+        operationId: R602
+        summary: 'R602: View Users'
+        description: 'List all users. Access: ADM'
+        tags:
+          - 'M06: Administration'
+        responses:
+          '200': 
+            description: 'Ok. Showing all users and available options.'
+  /user/{id}/block:
+      post:
+        operationId: R603
+        summary: 'R603: Block User'
+        description: 'Block a user from making reviews. Access: ADM'
+        tags:
+          - 'M06: Administration'
+        parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer
+            required: true
+        responses:
+          '200':
+            description: 'Ok. Block or Unblock user. '
+          '403': 
+            description: 'The user does not have permissions to perfom the action'
+
+  /user/{id}/unblock:
+      post:
+        operationId: R604
+        summary: 'R604: Unblock User'
+        description: 'Unblock a user from making reviews. Access: ADM'
+        tags:
+          - 'M06: Administration'
+        parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer
+            required: true
+        responses:
+          '200':
+            description: 'Ok. Block or Unblock user. '
+          '403': 
+            description: 'The user does not have permissions to perfom the action'
+      
+
+  /user/{id}/edit:
+      get:
+        operationId: R605
+        summary: 'R605: User Profile Edit Form'
+        description: 'Get the user edit form. Access: ADM'
+        tags:
+          - 'M06: Administration'
+        responses:
+          '200': 
+            description: 'Ok. Showing user edition form.'
+      post:
+        operationId: R606
+        summary: 'R606: User Profile Edit Request'
+        description: 'Edit profile of a specific user. Access: ADM'
+        tags:
+          - 'M06: Administration'
+        requestBody:
+          required: true
+          content:
+            application/x-www-form-urlencoded:
+              schema:
+                type: object
+                properties:
+                  image:
+                    type: string
+                    format: bytes
+                  name:
+                    type: string
+                  email:
+                    type: string
+                    format: email
+                  current password:
+                    type: string
+                    format: password
+                required:
+                  - current password
+        responses:
+          '302':
+            description: 'Redirecting to the user edit profile page /user/{id}/edit.'
+          '403': 
+            description: 'The user does not have permissions to perfom the action'
+
+  /warehouses:
+    get: 
+      operationId: R607
+      summary: 'R607: List all warehouses'
+      description: 'List all warehouses currently selling in the store. Access: ADM'
+      tags:
+          - 'M06: Administration' 
+      responses:
+        '200':
+            description: 'Ok. Showing all warehouses' 
+        '403':
+            description: 'Forbidden, not enough permissions'
+
+  /warehouses/{warehouseId}:
+    get: 
+      operationId: R608
+      summary: 'R608: List all products of a warehouse'
+      description: 'List all the products of the chosen warehouse. Access: ADM'
+      tags:
+          - 'M06: Administration' 
+      parameters:
+          - in: path
+            name: warehouseId
+            schema:
+              type: integer
+            required: true
+      responses:
+        '200':
+            description: 'Ok. Showing warehouse products' 
+        '403':
+            description: 'Forbidden, not enough permissions'
+    delete:
+      operationId: R609
+      summary: 'R609: Delete warehouse'
+      description: 'Provide the admin with a form for deleting warehouses. Access: ADM'
+      tags:
+          - 'M06: Administration' 
+      responses:
+        '200':
+            description: 'Ok. Showing the form.' 
+        '403':
+            description: 'Forbidden, not enough permissions.'
+
+  /add_warehouse:
+    get: 
+      operationId: R610
+      summary: 'R610: Get warehouse addition form'
+      description: 'Provides the admin with a form for warehouse creation. Access: ADM'
+      tags:
+          - 'M06: Administration' 
+      responses:
+        '200':
+            description: 'Ok. Showing the form.' 
+        '403':
+            description: 'Forbidden, not enough permissions.'
+    post: 
+        operationId: R611
+        summary: 'R611: Add a new warehouse'
+        description: 'Send warehouse information to the server, for it to be inserted in the database. Access: ADM'
+        tags:
+          - 'M06: Administration'
+        requestBody:
+          required: true
+          content:
+            application/x-www-form-urlencoded:
+              schema:
+                type: object
+                properties:
+                  code :
+                    type: integer
+                  location :
+                    type: integer
+                  postal_code :
+                    type: integer
+                required:
+                  - code 
+                  - location 
+                  - postal_code 
+        responses:
+          '302':
+            description: 'Redirecting to the list warehouses page /admin/{id}/warehouses.'
+          '403': 
+            description: 'The user does not have permissions to perfom the action'
+        
+  ###---------------------------M07---------------------------###
+
+  /home:
+      get:
+        operationId: R701
+        summary: 'R701: Home page'
+        description: 'Home page view. Access: PUB'
+        tags:
+          - 'M07: Static Pages' 
+        responses:
+          '200':
+            description: 'Ok. Showing home page'  
+  /contacts:
+      get:
+        operationId: R702
+        summary: 'R702: Contacts page'
+        description: 'Contains helpful contacts. Access: PUB'
+        tags:
+          - 'M07: Static Pages' 
+        responses:
+          '200':
+            description: 'Ok. Showing contacts page'  
+  /faq:
+      get:
+        operationId: R703
+        summary: 'R703: Faq page'
+        description: 'Faq page view. Access: PUB'
+        tags:
+          - 'M07: Static Pages' 
+        responses:
+          '200':
+            description: 'Ok. Showing faq page' 
+             
+  /about_us:
+      get:
+        operationId: R704
+        summary: 'R704: About us page'
+        description: 'About us page view, useful information about the company. Access: PUB'
+        tags:
+          - 'M07: Static Pages' 
+        responses:
+          '200':
+            description: 'Ok. Showing About us page'  
+        

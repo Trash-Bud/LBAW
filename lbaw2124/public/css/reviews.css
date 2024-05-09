@@ -1,0 +1,136 @@
+.reviews-section{
+    display: flex;
+    justify-content: stretch;
+    padding: 10px;
+    width: 90%;
+    border: rgba(115, 119, 123, 0.87) 5px solid;
+    border-radius: 10px;
+    flex-direction: column;
+}
+
+
+.hidden {
+    display: none !important;
+}
+
+.reviews-list{
+    margin-top: 1vh;
+    display: grid;
+    justify-content: center;
+    grid-template-columns: 1fr;
+}
+
+.review-box{
+    display: flex;
+    background-color: rgb(241, 239, 239);
+
+    border-radius: 10px;
+    padding: 2%;
+    width: 100%;
+    align-items: center;
+}
+.review_date {
+    width: max-content;
+    font-size: small;
+}
+
+.review-info{
+    display: flex;
+    gap: 5%;
+    justify-self: flex-start;
+    margin-right: auto;
+}
+
+.review-user{
+    display: flex;
+    justify-content: center;
+flex-direction: column ;
+
+}
+
+.review-profile-img{
+    max-width:70px;
+    max-height:70px;
+    width: auto;
+    height: auto;
+    margin: auto;
+}
+
+
+.report-btn{
+    height: min-content;
+    width: min-content;
+}
+
+.review-btn{
+    width: min-content;
+    height: min-content;
+}
+
+
+
+#own-review-box{
+    display: flex;
+    background-color: rgb(255, 237, 200);
+    justify-content: flex-end;
+    border-radius: 10px;
+    border: 1px solid darkblue;
+    padding: 2%;
+    width: 100%;
+    align-items: center;
+    margin-bottom: auto;
+}
+
+
+.add-review-form {
+    grid-template-columns: 3fr 0.5fr 1fr;
+}
+
+
+
+.review-form{
+
+    width: 100%;
+    align-items: center;
+    border: 1px #eaeaea solid;
+    border-radius: 10px;
+    padding: 2%;
+}
+
+.add-review-form  input {
+    width: min-content;
+}
+
+.add-review-form > div {
+    display: grid;
+    align-items: center;
+
+}
+
+.add-review-form > button {
+    justify-self: end;
+}
+
+.review-stars{
+    display: flex;
+    flex-direction: row;
+    width: min-content;
+}
+
+@media only screen and (max-width: 890px){
+    #own-review-box{
+        flex-direction: column;
+        height: fit-content;
+    }
+    .review-info{
+        flex-direction: column;
+    }
+    .review-box{
+        flex-direction: column;
+    }
+
+    .review-user {
+        flex-direction: column;
+        align-items: center;
+    }
+}

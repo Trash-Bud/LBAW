@@ -1,0 +1,99 @@
+#wishlist-page{
+    display: flex;
+    justify-items: center;
+    padding: 5%;
+    float: right;
+    padding: 2%;
+    gap: 10%;
+    width: 80%;
+    height: 98%;
+    flex-direction: column;
+}
+
+
+#user-wishlist {
+    display: flex;
+    justify-items: center;
+    overflow-y: scroll;
+    padding: 1%;
+    flex-direction: column;
+    height: 50%;
+}
+
+
+.wishlist-card{
+
+    display: flex;
+    border: 1px solid lightgrey;
+    border-radius: 10px;
+    width: 100%;
+    height: 50%;
+    justify-content: space-between;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+.wishlist-card > * {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-height: 100%;
+}
+
+
+.product-name{
+    display: flex;
+    justify-content: center;
+    align-self: stretch;
+    height: auto;
+    text-align: center;
+}
+
+.product-quantity{
+    max-height: 4vh;
+    margin-top: 10%;
+    text-align: center;
+    max-width: 2vw;
+    align-self: center;
+}
+
+.delete-from-wishlist{
+    justify-self: end;
+    align-self: center;
+
+}
+
+.cart-image{
+    height: 100%;
+    width: 100%;
+}
+
+
+.delete-from-wishlist{
+    background-color: #1a202c;
+    border-radius: 40px;
+    margin: auto;
+}
+
+.add-to-cart-wishlist {
+    width: 5%;
+    margin: auto;
+}
+
+.add-to-cart-wishlist > img{
+   z-index: 0;
+}
+
+
+@media only screen and (max-width: 890px){
+    .wishlist-card{
+        flex-direction: column;
+        height: fit-content;
+    }
+    .product-name{
+        width:100%;
+        border-radius: 10px 10px 0 0px;
+    }
+
+}
